@@ -1,11 +1,9 @@
-# chatonline
+# Chat Online
 
-Aplicativo flutter desenvolvido como complementação do curso da Udemy &quot;Criação de Apps Android e iOS com Flutter - Crie 16 Apps&quot;, de Daniel Ciolfi.
+Aplicativo flutter desenvolvido como complementação do curso da Udemy "Criação de Apps Android e iOS com Flutter - Crie 16 Apps", de Daniel Ciolfi.
 
-## Getting Started
-
+* Getting Started
 This project is a starting point for a Flutter application.
-
 A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
