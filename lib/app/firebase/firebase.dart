@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class ControlFirebase {
   void sendMessage({String text, File file}) async {
-    if (text != null) {
-      Firestore.instance.collection("messages").add({"text": text});
-    } else {
+    Map<String, dynamic> data = {};
+
+    if (file != null) {
       StorageUploadTask task = FirebaseStorage.instance
           .ref()
           .child('images')
@@ -15,7 +15,17 @@ class ControlFirebase {
           .putFile(file);
       StorageTaskSnapshot snapshot = await task.onComplete;
       String url = await snapshot.ref.getDownloadURL();
-      print(url);
+      data["imgUrl"] = url;
     }
+
+    if (text != null) {
+      data["text"] = text;
+    }
+
+    Firestore.instance.collection("messages").add(data);
+  }
+
+  Stream getMessages() {
+    return Firestore.instance.collection("messages").snapshots();
   }
 }

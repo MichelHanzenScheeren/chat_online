@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:chatonline/app/pages/chatPage/textComposer.dart';
 import 'package:chatonline/app/firebase/firebase.dart';
+import 'package:chatonline/app/pages/chatPage/textComposer.dart';
+import 'package:chatonline/app/pages/chatPage/constructBody.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _ChatState extends State<Chat> {
         title: Text("Olá!"),
         centerTitle: true,
       ),
-      body: Container(),
+      body: ConstructBody(controlFb.getMessages),
       bottomSheet: TextComposer(controlFb.sendMessage),
     );
   }
