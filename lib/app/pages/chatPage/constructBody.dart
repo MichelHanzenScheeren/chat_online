@@ -1,4 +1,5 @@
 import 'package:chatonline/app/firebase/controlFirebase.dart';
+import 'package:chatonline/app/pages/chatPage/chatMessage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class _ConstructBodyState extends State<ConstructBody> {
             case ConnectionState.waiting:
               return _waitingWidget();
               break;
+
             default:
               return _listWidget(snapshot.data.documents.reversed.toList());
           }
@@ -38,9 +40,7 @@ class _ConstructBodyState extends State<ConstructBody> {
       itemCount: documents.length,
       reverse: true,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(documents[index].data["text"]),
-        );
+        return ChatMessage(documents[index].data);
       },
     );
   }
