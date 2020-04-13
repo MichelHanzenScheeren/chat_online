@@ -1,9 +1,13 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ControlFirebase {
+  static final ControlFirebase instance = ControlFirebase.internal();
+
+  ControlFirebase.internal();
+  factory ControlFirebase() => instance;
+
   void sendMessage({String text, File file}) async {
     Map<String, dynamic> data = {};
 
