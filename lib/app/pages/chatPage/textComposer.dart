@@ -1,10 +1,11 @@
 import 'dart:io';
-
-import 'package:chatonline/app/firebase/controlFirebase.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TextComposer extends StatefulWidget {
+  final Function({String text, File file}) sendMessage;
+  TextComposer(this.sendMessage);
+
   @override
   _TextComposerState createState() => _TextComposerState();
 }
@@ -51,7 +52,7 @@ class _TextComposerState extends State<TextComposer> {
   }
 
   void _configureMessage() {
-    ControlFirebase.instance.sendMessage(text: _controller.text);
+    widget.sendMessage(text: _controller.text);
     _controller.clear();
     setState(() {
       _haveText = false;
@@ -64,7 +65,7 @@ class _TextComposerState extends State<TextComposer> {
     if (imgFile == null) {
       return;
     } else {
-      ControlFirebase.instance.sendMessage(file: imgFile);
+      widget.sendMessage(file: imgFile);
     }
   }
 }
