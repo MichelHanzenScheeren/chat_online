@@ -40,7 +40,12 @@ class _ConstructBodyState extends State<ConstructBody> {
       itemCount: documents.length,
       reverse: true,
       itemBuilder: (context, index) {
-        return ChatMessage(documents[index].data, true);
+        return ChatMessage(
+            documents[index].data,
+            documents[index].data["uid"] ==
+                    ControlFirebase.instance.currentUser?.uid
+                ? true
+                : false);
       },
     );
   }

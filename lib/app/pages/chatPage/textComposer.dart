@@ -17,8 +17,15 @@ class _TextComposerState extends State<TextComposer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
+      height: 42,
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.deepPurple,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           IconButton(
             icon: Icon(Icons.photo_camera),
@@ -28,8 +35,9 @@ class _TextComposerState extends State<TextComposer> {
             child: TextField(
               controller: _controller,
               decoration: InputDecoration.collapsed(
-                hintText: "Enviar uma Mensagem",
-              ),
+                  hintText: "Enviar uma Mensagem",
+                  hintStyle: TextStyle(fontSize: 16)),
+              style: TextStyle(color: Colors.white, fontSize: 16),
               onChanged: (text) {
                 setState(() => _haveText = text.isNotEmpty);
               },

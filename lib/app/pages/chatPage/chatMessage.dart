@@ -25,40 +25,15 @@ class ChatMessage extends StatelessWidget {
                       backgroundImage: NetworkImage(mensagem["senderPhotoUrl"]),
                     ),
                   ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(7),
-                  color: mine ? Colors.deepPurple : Colors.purple,
-                ),
-                child: Column(
-                  crossAxisAlignment:
-                      mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                  children: <Widget>[
-                    mensagem["imgUrl"] != null
-                        ? Image.network(
-                            mensagem["imgUrl"],
-                          )
-                        : Text(
-                            mensagem["text"],
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                    Container(
-                      alignment:
-                          mine ? Alignment.bottomLeft : Alignment.bottomRight,
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        mensagem["senderName"],
-                        style: TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w500),
+            mensagem["imgUrl"] != null
+                ? Expanded(
+                    child: message(),
+                  )
+                : mensagem["text"].length < 20
+                    ? message()
+                    : Expanded(
+                        child: message(),
                       ),
-                    )
-                  ],
-                ),
-              ),
-            ),
             mine
                 ? Padding(
                     padding: const EdgeInsets.only(left: 10.0),
@@ -69,6 +44,39 @@ class ChatMessage extends StatelessWidget {
                 : Container(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget message() {
+    return Container(
+      padding: EdgeInsets.all(7),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(7),
+        color: mine ? Colors.deepPurpleAccent : Colors.purple,
+      ),
+      child: Column(
+        crossAxisAlignment:
+            mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: <Widget>[
+          mensagem["imgUrl"] != null
+              ? Image.network(
+                  mensagem["imgUrl"],
+                )
+              : Text(
+                  mensagem["text"],
+                  style: TextStyle(fontSize: 16.0),
+                ),
+          Container(
+            alignment: mine ? Alignment.bottomLeft : Alignment.bottomRight,
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              mensagem["senderName"],
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+            ),
+          )
+        ],
       ),
     );
   }

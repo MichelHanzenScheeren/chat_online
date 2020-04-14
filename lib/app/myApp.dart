@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chatonline/app/pages/homePage/home.dart';
 import 'package:chatonline/app/pages/chatPage/chat.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,9 +8,17 @@ class MyApp extends StatelessWidget {
       title: "Chat Online",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        disabledColor: Colors.black45,
+        primaryColor: Colors.deepPurple,
+        hintColor: Colors.white,
+        textTheme: TextTheme(
+          body1: TextStyle(color: Colors.white),
+        ),
         iconTheme: IconThemeData(
-          color: Colors.deepPurple,
+          color: Colors.white,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          hintStyle: TextStyle(color: Colors.white),
         ),
       ),
       home: Chat(),

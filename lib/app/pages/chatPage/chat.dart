@@ -73,11 +73,25 @@ class _ChatState extends State<Chat> {
               : Container()
         ],
       ),
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          ConstructBody(),
-          isLoadingImg ? LinearProgressIndicator() : Container(),
-          TextComposer(sendMessage),
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  "images/background.jpg",
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              ConstructBody(),
+              isLoadingImg ? LinearProgressIndicator() : Container(),
+              TextComposer(sendMessage),
+            ],
+          ),
         ],
       ),
     );
