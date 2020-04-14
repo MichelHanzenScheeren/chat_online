@@ -20,24 +20,28 @@ class _TextComposerState extends State<TextComposer> {
       height: 42,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
         color: Colors.deepPurple,
       ),
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           IconButton(
+            alignment: Alignment.bottomCenter,
             icon: Icon(Icons.photo_camera),
             onPressed: _getFile,
           ),
           Expanded(
             child: TextField(
+              expands: true,
+              maxLines: null,
+              minLines: null,
               controller: _controller,
-              decoration: InputDecoration.collapsed(
+              decoration: InputDecoration(
                   hintText: "Enviar uma Mensagem",
-                  hintStyle: TextStyle(fontSize: 16)),
-              style: TextStyle(color: Colors.white, fontSize: 16),
+                  hintStyle: TextStyle(fontSize: 15)),
+              style: TextStyle(color: Colors.white, fontSize: 15),
               onChanged: (text) {
                 setState(() => _haveText = text.isNotEmpty);
               },
@@ -49,6 +53,7 @@ class _TextComposerState extends State<TextComposer> {
             ),
           ),
           IconButton(
+            alignment: Alignment.bottomCenter,
             icon: Icon(
               Icons.send,
             ),

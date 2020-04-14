@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
       title: "Chat Online",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        disabledColor: Colors.black45,
+        disabledColor: Colors.black87,
         primaryColor: Colors.deepPurple,
         hintColor: Colors.white,
         textTheme: TextTheme(

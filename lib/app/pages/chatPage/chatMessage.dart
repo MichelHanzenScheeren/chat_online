@@ -11,7 +11,7 @@ class ChatMessage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: FractionallySizedBox(
         alignment: mine ? Alignment.topRight : Alignment.topLeft,
-        widthFactor: 0.85,
+        widthFactor: 0.78,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment:
@@ -57,8 +57,7 @@ class ChatMessage extends StatelessWidget {
         color: mine ? Colors.deepPurpleAccent : Colors.purple,
       ),
       child: Column(
-        crossAxisAlignment:
-            mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           mensagem["imgUrl"] != null
               ? Image.network(
@@ -69,15 +68,20 @@ class ChatMessage extends StatelessWidget {
                   style: TextStyle(fontSize: 16.0),
                 ),
           Container(
-            alignment: mine ? Alignment.bottomLeft : Alignment.bottomRight,
+            alignment: Alignment.bottomRight,
             padding: const EdgeInsets.only(top: 6),
             child: Text(
-              mensagem["senderName"],
+              getDate(),
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
             ),
           )
         ],
       ),
     );
+  }
+
+  String getDate() {
+    DateTime data = mensagem["time"].toDate();
+    return "${data.hour}:${data.minute}";
   }
 }
