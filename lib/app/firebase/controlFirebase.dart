@@ -10,17 +10,17 @@ class ControlFirebase {
   factory ControlFirebase() => instance;
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  FirebaseUser _currentUser;
+  FirebaseUser currentUser;
 
   void initUser() {
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      _currentUser = user;
+      currentUser = user;
     });
   }
 
   Future<FirebaseUser> getUser() async {
-    if (_currentUser != null) {
-      return _currentUser;
+    if (currentUser != null) {
+      return currentUser;
     }
 
     try {
@@ -46,7 +46,7 @@ class ControlFirebase {
     return result.user;
   }
 
-  void sendMessage({String text, File file}) async {
+  Future sendMessage({String text, File file}) async {
     final FirebaseUser user = await getUser();
     if (user == null) {
       throw Error();
@@ -56,6 +56,7 @@ class ControlFirebase {
       "uid": user.uid,
       "senderName": user.displayName,
       "senderPhotoUrl": user.photoUrl,
+      "time": Timestamp.now()
     };
 
     if (file != null) {
@@ -77,6 +78,15 @@ class ControlFirebase {
   }
 
   Stream getMessages() {
-    return Firestore.instance.collection("messages").snapshots();
+    return Firestore.instance
+        .collection("messages")
+        .orderBy("time")
+        .snapshots();
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    googleSignIn.signOut();
+    currentUser = null;
   }
 }

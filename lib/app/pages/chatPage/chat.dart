@@ -12,19 +12,7 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  void sendMessage({String text, File file}) {
-    try {
-      ControlFirebase.instance.sendMessage(text: text, file: file);
-    } catch (erro) {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text("Não foi possível concluir o login, tente novamente!"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
+  bool isLoadingImg = false;
 
   @override
   void initState() {
@@ -32,18 +20,63 @@ class _ChatState extends State<Chat> {
     ControlFirebase.instance.initUser();
   }
 
+  Future sendMessage({String text, File file}) async {
+    try {
+      setLoading(true);
+      await ControlFirebase.instance.sendMessage(text: text, file: file);
+      setLoading(false);
+    } catch (erro) {
+      showSnackbar(
+          "Não foi possível concluir o login, tente novamente!", Colors.red);
+    }
+  }
+
+  void setLoading(bool loading) {
+    setState(() {
+      isLoadingImg = loading;
+    });
+  }
+
+  void showSnackbar(String text, Color cor) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: cor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text("Olá!"),
+        title: Text(ControlFirebase.instance.currentUser != null
+            ? "Olá, ${ControlFirebase.instance.currentUser.displayName}"
+            : "Chat App"),
         centerTitle: true,
         elevation: 0,
+        actions: <Widget>[
+          ControlFirebase.instance.currentUser != null
+              ? IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    setState(() {
+                      ControlFirebase.instance.signOut();
+                    });
+                    showSnackbar("signOut concluído!", Colors.yellow);
+                  },
+                )
+              : Container()
+        ],
       ),
       body: Column(
         children: <Widget>[
           ConstructBody(),
+          isLoadingImg ? LinearProgressIndicator() : Container(),
           TextComposer(sendMessage),
         ],
       ),
