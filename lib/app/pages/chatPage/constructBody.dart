@@ -40,7 +40,7 @@ class _ConstructBodyState extends State<ConstructBody> {
       itemCount: documents.length,
       reverse: true,
       itemBuilder: (context, index) {
-        return ChatMessage(documents[index].data);
+        return ChatMessage(documents[index].data, true);
       },
     );
   }
