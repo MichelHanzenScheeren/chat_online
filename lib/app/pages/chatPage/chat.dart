@@ -25,7 +25,7 @@ class _ChatState extends State<Chat> {
       setLoading(true);
       await ControlFirebase.instance.sendMessage(text: text, file: file);
       setLoading(false);
-    } catch (erro) {
+    } catch (error) {
       showSnackbar(
           "Não foi possível concluir o login, tente novamente!", Colors.red);
     }
@@ -56,7 +56,7 @@ class _ChatState extends State<Chat> {
       appBar: AppBar(
         title: Text(ControlFirebase.instance.currentUser != null
             ? "Olá, ${ControlFirebase.instance.currentUser.displayName}"
-            : "Chat App"),
+            : "ChatApp"),
         centerTitle: true,
         elevation: 0,
         actions: <Widget>[

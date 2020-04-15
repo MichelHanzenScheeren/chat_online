@@ -1,3 +1,4 @@
+import 'package:chatonline/app/pages/homePage/home.dart';
 import 'package:flutter/material.dart';
 import 'package:chatonline/app/pages/chatPage/chat.dart';
 
@@ -7,6 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Chat Online",
       debugShowCheckedModeBanner: false,
+      home: Home(),
       theme: ThemeData(
         disabledColor: Colors.black87,
         primaryColor: Colors.deepPurple,
@@ -21,7 +23,6 @@ class MyApp extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.white),
         ),
       ),
-      home: Chat(),
     );
   }
 }
