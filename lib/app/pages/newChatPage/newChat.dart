@@ -39,9 +39,7 @@ class _NewChatState extends State<NewChat> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return waitingWidget();
                     break;
                   default:
                     return listWidget(snapshot.data.documents.toList());
@@ -50,6 +48,19 @@ class _NewChatState extends State<NewChat> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget waitingWidget() {
+    return Center(
+      child: Container(
+        width: 80,
+        height: 80,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          strokeWidth: 5,
+        ),
       ),
     );
   }
@@ -71,7 +82,7 @@ class _NewChatState extends State<NewChat> {
       child: Card(
         color: Colors.deepPurpleAccent,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 10, 10, 10),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: <Widget>[
               Container(
@@ -87,9 +98,8 @@ class _NewChatState extends State<NewChat> {
               ),
               Flexible(
                 child: Padding(
-                  padding: EdgeInsets.only(left: 13),
+                  padding: EdgeInsets.only(left: 12),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         friend["name"],

@@ -15,27 +15,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   programState state = programState.waiting;
-  FirebaseUser currentUser;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    initUser();
-  }
-
-  void initUser() async {
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      setState(() {
-        currentUser = user;
-        ControlFirebase.instance.currentUser = user;
-        verifyLogin();
-      });
-    });
+    ControlFirebase.instance.initUser(verifyLogin);
   }
 
   void verifyLogin() {
-    if (currentUser != null) {
+    if (ControlFirebase.instance.currentUser != null) {
       setState(() => state = programState.logged);
     } else {
       setState(() => state = programState.notLogged);
@@ -44,49 +33,51 @@ class _HomeState extends State<Home> {
 
   Future doLogin() async {
     try {
-      await ControlFirebase.instance.login();
-      verifyLogin();
+      String nome = await ControlFirebase.instance.login();
+      mySnackbar("Bem vindo, $nome!", Colors.green);
     } catch (erro) {
-      showSnackbar();
+      mySnackbar("Não foi possível fazer o login!", Colors.red);
     }
   }
 
   void logout() {
-    ControlFirebase.instance.signOut();
+    try {
+      ControlFirebase.instance.signOut();
+    } catch (erro) {
+      mySnackbar("Não é possível fazer logout no momento!", Colors.red);
+    }
   }
 
-  void showSnackbar() {
+  void mySnackbar(String text, Color cor) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
+        backgroundColor: cor,
+        duration: Duration(seconds: 3),
         content: Text(
-          "Não foi possível fazer o login!",
+          text,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 15,
+            fontSize: 18,
           ),
         ),
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
       ),
     );
+  }
+
+  Future openPage(BuildContext context, dynamic page) async {
+    return await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: builAppBar(),
       backgroundColor: Colors.deepPurpleAccent,
+      appBar: builAppBar(),
       body: buildBody(),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          String uid = await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => NewChat()));
-          verificateUid(uid);
-        },
-      ),
+      floatingActionButton: buttonNewChat(context),
     );
   }
 
@@ -125,7 +116,23 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Widget buttonNewChat(BuildContext context) {
+    if (state == programState.logged) {
+      return FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () async {
+          String uid = await openPage(context, NewChat());
+          verificateUid(uid);
+        },
+      );
+    } else {
+      return Container();
+    }
+  }
+
   void verificateUid(String uid) {
-    //TODO
+    if (uid == null) {
+      return;
+    } else {}
   }
 }

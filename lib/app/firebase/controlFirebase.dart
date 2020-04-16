@@ -12,6 +12,13 @@ class ControlFirebase {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   FirebaseUser currentUser;
 
+  void initUser(Function verifyLogin) {
+    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
+      currentUser = user;
+      verifyLogin();
+    });
+  }
+
   bool isLogged() {
     return (FirebaseAuth.instance.currentUser()) != null;
   }
@@ -29,7 +36,7 @@ class ControlFirebase {
     }
   }
 
-  Future login() async {
+  Future<String> login() async {
     final GoogleSignInAccount account = await googleSignIn.signIn();
     final GoogleSignInAuthentication authentication =
         await account.authentication;
@@ -41,6 +48,7 @@ class ControlFirebase {
     AuthResult result =
         await FirebaseAuth.instance.signInWithCredential(credential);
     await saveUser(result.user);
+    return result.user.displayName;
   }
 
   Future saveUser(FirebaseUser user) async {
