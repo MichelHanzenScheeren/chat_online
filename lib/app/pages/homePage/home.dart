@@ -1,7 +1,8 @@
 import 'package:chatonline/app/firebase/controlFirebase.dart';
-import 'package:chatonline/app/pages/homePage/constructHome.dart';
+import 'package:chatonline/app/pages/homePage/allChats.dart';
 import 'package:chatonline/app/pages/homePage/login.dart';
 import 'package:chatonline/app/pages/homePage/waiting.dart';
+import 'package:chatonline/app/pages/newChatPage/newChat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +51,10 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void logout() {
+    ControlFirebase.instance.signOut();
+  }
+
   void showSnackbar() {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(
@@ -71,36 +76,56 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: state == programState.logged
-          ? AppBar(
-              title: Text("ChatApp"),
-              elevation: 0,
-              actions: <Widget>[
-                IconButton(
-                  padding: EdgeInsets.only(left: 0, right: 1),
-                  icon: Icon(Icons.search),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  padding: EdgeInsets.only(left: 0, right: 2),
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    ControlFirebase.instance.signOut();
-                    state = programState.notLogged;
-                  },
-                ),
-              ],
-            )
-          : PreferredSize(
-              preferredSize: Size(0, 0),
-              child: Container(),
-            ),
+      appBar: builAppBar(),
       backgroundColor: Colors.deepPurpleAccent,
-      body: state == programState.waiting
-          ? Waiting()
-          : (state == programState.notLogged
-              ? Login(doLogin)
-              : ConstructHome()),
+      body: buildBody(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () async {
+          String uid = await Navigator.push(
+              context, MaterialPageRoute(builder: (context) => NewChat()));
+          verificateUid(uid);
+        },
+      ),
     );
+  }
+
+  PreferredSizeWidget builAppBar() {
+    if (state != programState.logged) {
+      return PreferredSize(
+        preferredSize: Size(0, 0),
+        child: Container(),
+      );
+    } else {
+      return AppBar(
+        title: Text("ChatApp"),
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+          IconButton(
+            alignment: Alignment.centerLeft,
+            icon: Icon(Icons.exit_to_app),
+            onPressed: logout,
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget buildBody() {
+    if (state == programState.waiting) {
+      return Waiting();
+    } else if (state == programState.notLogged) {
+      return Login(doLogin);
+    } else {
+      return AllChats();
+    }
+  }
+
+  void verificateUid(String uid) {
+    //TODO
   }
 }

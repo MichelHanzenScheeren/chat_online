@@ -38,7 +38,23 @@ class ControlFirebase {
       idToken: authentication.idToken,
       accessToken: authentication.accessToken,
     );
-    await FirebaseAuth.instance.signInWithCredential(credential);
+    AuthResult result =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    await saveUser(result.user);
+  }
+
+  Future saveUser(FirebaseUser user) async {
+    Map<String, dynamic> data = {
+      "uid": user.uid,
+      "name": user.displayName,
+      "senderPhotoUrl": user.photoUrl,
+      "email": user.email,
+      "phone": user.phoneNumber
+    };
+    await Firestore.instance
+        .collection("users")
+        .document(data["uid"])
+        .setData(data);
   }
 
   Future sendMessage({String text, File file}) async {
@@ -78,6 +94,14 @@ class ControlFirebase {
         .collection("messages")
         .orderBy("time")
         .snapshots();
+  }
+
+  Future<QuerySnapshot> getAllFriends() async {
+    return await Firestore.instance
+        .collection("users")
+        .document(currentUser.uid)
+        .collection("friends")
+        .getDocuments();
   }
 
   void signOut() {

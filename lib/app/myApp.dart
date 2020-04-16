@@ -1,7 +1,5 @@
 import 'package:chatonline/app/pages/homePage/home.dart';
-import 'package:chatonline/app/pages/homePage/waiting.dart';
 import 'package:flutter/material.dart';
-import 'package:chatonline/app/pages/chatPage/chat.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -22,6 +20,10 @@ class MyApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           hintStyle: TextStyle(color: Colors.white),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.deepPurple,
+          elevation: 0,
         ),
       ),
     );
