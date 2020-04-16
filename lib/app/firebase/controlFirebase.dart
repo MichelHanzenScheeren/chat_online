@@ -12,10 +12,8 @@ class ControlFirebase {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   FirebaseUser currentUser;
 
-  void initUser() {
-    FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      currentUser = user;
-    });
+  bool isLogged() {
+    return (FirebaseAuth.instance.currentUser()) != null;
   }
 
   Future<FirebaseUser> getUser() async {
@@ -24,13 +22,14 @@ class ControlFirebase {
     }
 
     try {
-      return await login();
+      await login();
+      return currentUser;
     } catch (erro) {
       return null;
     }
   }
 
-  Future<FirebaseUser> login() async {
+  Future login() async {
     final GoogleSignInAccount account = await googleSignIn.signIn();
     final GoogleSignInAuthentication authentication =
         await account.authentication;
@@ -39,11 +38,7 @@ class ControlFirebase {
       idToken: authentication.idToken,
       accessToken: authentication.accessToken,
     );
-
-    final AuthResult result =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-    return result.user;
+    await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future sendMessage({String text, File file}) async {
@@ -63,6 +58,7 @@ class ControlFirebase {
       StorageUploadTask task = FirebaseStorage.instance
           .ref()
           .child('images')
+          .child(currentUser.uid)
           .child(DateTime.now().millisecondsSinceEpoch.toString())
           .putFile(file);
       StorageTaskSnapshot snapshot = await task.onComplete;

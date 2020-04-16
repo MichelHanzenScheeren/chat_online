@@ -1,4 +1,5 @@
 import 'package:chatonline/app/pages/homePage/home.dart';
+import 'package:chatonline/app/pages/homePage/waiting.dart';
 import 'package:flutter/material.dart';
 import 'package:chatonline/app/pages/chatPage/chat.dart';
 

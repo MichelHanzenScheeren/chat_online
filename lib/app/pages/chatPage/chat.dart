@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:chatonline/app/firebase/controlFirebase.dart';
 import 'package:flutter/material.dart';
 import 'package:chatonline/app/pages/chatPage/textComposer.dart';
@@ -13,12 +12,6 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoadingImg = false;
-
-  @override
-  void initState() {
-    super.initState();
-    ControlFirebase.instance.initUser();
-  }
 
   Future sendMessage({String text, File file}) async {
     try {

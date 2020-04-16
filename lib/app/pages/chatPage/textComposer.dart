@@ -34,9 +34,9 @@ class _TextComposerState extends State<TextComposer> {
           ),
           Expanded(
             child: TextField(
-              expands: true,
+              /*expands: true,
               maxLines: null,
-              minLines: null,
+              minLines: null,*/
               controller: _controller,
               decoration: InputDecoration(
                   hintText: "Enviar uma Mensagem",
