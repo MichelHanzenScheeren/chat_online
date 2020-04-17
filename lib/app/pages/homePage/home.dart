@@ -74,6 +74,7 @@ class _HomeState extends State<Home> {
     if (uid == null) {
       return;
     } else {
+      ControlFirebase.instance.createUserChat(uid);
       await openPage(context, Chat(uid));
     }
   }

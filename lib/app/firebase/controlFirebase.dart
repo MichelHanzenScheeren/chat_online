@@ -100,6 +100,30 @@ class ControlFirebase {
         .document("${uids[0]}${uids[1]}")
         .collection("messages")
         .add(data);
+
+    createUserChat(uidFriend);
+  }
+
+  void createUserChat(String uidFriend) async {
+    Map<String, dynamic> data = {
+      "friendUid": uidFriend,
+    };
+    await Firestore.instance
+        .collection("users")
+        .document(currentUser.uid)
+        .collection("chats")
+        .document(uidFriend)
+        .setData(data);
+
+    data = {
+      "friendUid": currentUser.uid,
+    };
+    await Firestore.instance
+        .collection("users")
+        .document(uidFriend)
+        .collection("chats")
+        .document(currentUser.uid)
+        .setData(data);
   }
 
   Stream getMessages(String uidFriend) {
@@ -112,6 +136,10 @@ class ControlFirebase {
         .orderBy("time")
         .snapshots();
   }
+
+  // Stream getChats() {
+  //   return Firestore.instance.collection("chats").where("uid", )
+  // }
 
   Future<QuerySnapshot> getAllFriends() async {
     return await Firestore.instance
