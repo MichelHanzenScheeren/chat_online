@@ -17,14 +17,6 @@ class ChatMessage extends StatelessWidget {
           mainAxisAlignment:
               mine ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
-            mine
-                ? Container()
-                : Container(
-                    padding: const EdgeInsets.only(right: 5),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(mensagem["senderPhotoUrl"]),
-                    ),
-                  ),
             mensagem["imgUrl"] != null
                 ? Expanded(
                     child: message(),
@@ -34,14 +26,6 @@ class ChatMessage extends StatelessWidget {
                     : Expanded(
                         child: message(),
                       ),
-            mine
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(mensagem["senderPhotoUrl"]),
-                    ),
-                  )
-                : Container(),
           ],
         ),
       ),

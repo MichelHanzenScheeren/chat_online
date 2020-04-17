@@ -65,16 +65,17 @@ class ControlFirebase {
         .setData(data);
   }
 
-  Future sendMessage({String text, File file}) async {
+  Future sendMessage(String uidFriend, {String text, File file}) async {
     final FirebaseUser user = await getUser();
     if (user == null) {
       throw Error();
     }
 
+    List<String> uids = [uidFriend, currentUser.uid];
+    uids.sort();
+
     Map<String, dynamic> data = {
-      "uid": user.uid,
-      "senderName": user.displayName,
-      "senderPhotoUrl": user.photoUrl,
+      "senderUid": user.uid,
       "time": Timestamp.now()
     };
 
@@ -94,11 +95,19 @@ class ControlFirebase {
       data["text"] = text;
     }
 
-    Firestore.instance.collection("messages").add(data);
+    Firestore.instance
+        .collection("chats")
+        .document("${uids[0]}${uids[1]}")
+        .collection("messages")
+        .add(data);
   }
 
-  Stream getMessages() {
+  Stream getMessages(String uidFriend) {
+    List<String> uids = [uidFriend, currentUser.uid];
+    uids.sort();
     return Firestore.instance
+        .collection("chats")
+        .document("${uids[0]}${uids[1]}")
         .collection("messages")
         .orderBy("time")
         .snapshots();
@@ -110,6 +119,10 @@ class ControlFirebase {
         .document(currentUser.uid)
         .collection("friends")
         .getDocuments();
+  }
+
+  Future<DocumentSnapshot> getFriend(String uid) async {
+    return await Firestore.instance.collection("users").document(uid).get();
   }
 
   void signOut() {

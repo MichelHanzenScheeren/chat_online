@@ -1,9 +1,9 @@
 import 'package:chatonline/app/firebase/controlFirebase.dart';
+import 'package:chatonline/app/pages/chatPage/chat.dart';
 import 'package:chatonline/app/pages/homePage/allChats.dart';
 import 'package:chatonline/app/pages/homePage/login.dart';
 import 'package:chatonline/app/pages/homePage/waiting.dart';
 import 'package:chatonline/app/pages/newChatPage/newChat.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum programState { waiting, logged, notLogged }
@@ -70,6 +70,14 @@ class _HomeState extends State<Home> {
         context, MaterialPageRoute(builder: (context) => page));
   }
 
+  void verificateUid(BuildContext context, String uid) async {
+    if (uid == null) {
+      return;
+    } else {
+      await openPage(context, Chat(uid));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,17 +130,11 @@ class _HomeState extends State<Home> {
         child: Icon(Icons.add),
         onPressed: () async {
           String uid = await openPage(context, NewChat());
-          verificateUid(uid);
+          verificateUid(context, uid);
         },
       );
     } else {
       return Container();
     }
-  }
-
-  void verificateUid(String uid) {
-    if (uid == null) {
-      return;
-    } else {}
   }
 }
