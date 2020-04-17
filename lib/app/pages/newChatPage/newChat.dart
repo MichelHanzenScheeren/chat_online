@@ -9,13 +9,6 @@ class NewChat extends StatefulWidget {
 }
 
 class _NewChatState extends State<NewChat> {
-  Map<String, dynamic> myFriends;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

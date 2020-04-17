@@ -74,7 +74,6 @@ class _HomeState extends State<Home> {
     if (uid == null) {
       return;
     } else {
-      ControlFirebase.instance.createUserChat(uid);
       await openPage(context, Chat(uid));
     }
   }
@@ -121,7 +120,7 @@ class _HomeState extends State<Home> {
     } else if (state == programState.notLogged) {
       return Login(doLogin);
     } else {
-      return AllChats();
+      return AllChats(openPage);
     }
   }
 

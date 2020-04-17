@@ -19,23 +19,6 @@ class ControlFirebase {
     });
   }
 
-  bool isLogged() {
-    return (FirebaseAuth.instance.currentUser()) != null;
-  }
-
-  Future<FirebaseUser> getUser() async {
-    if (currentUser != null) {
-      return currentUser;
-    }
-
-    try {
-      await login();
-      return currentUser;
-    } catch (erro) {
-      return null;
-    }
-  }
-
   Future<String> login() async {
     final GoogleSignInAccount account = await googleSignIn.signIn();
     final GoogleSignInAuthentication authentication =
@@ -66,7 +49,7 @@ class ControlFirebase {
   }
 
   Future sendMessage(String uidFriend, {String text, File file}) async {
-    final FirebaseUser user = await getUser();
+    final FirebaseUser user = currentUser;
     if (user == null) {
       throw Error();
     }
@@ -106,24 +89,21 @@ class ControlFirebase {
 
   void createUserChat(String uidFriend) async {
     Map<String, dynamic> data = {
-      "friendUid": uidFriend,
+      "hasChat": true,
     };
     await Firestore.instance
         .collection("users")
         .document(currentUser.uid)
-        .collection("chats")
+        .collection("friends")
         .document(uidFriend)
-        .setData(data);
+        .updateData(data);
 
-    data = {
-      "friendUid": currentUser.uid,
-    };
     await Firestore.instance
         .collection("users")
         .document(uidFriend)
-        .collection("chats")
+        .collection("friends")
         .document(currentUser.uid)
-        .setData(data);
+        .updateData(data);
   }
 
   Stream getMessages(String uidFriend) {
@@ -137,9 +117,14 @@ class ControlFirebase {
         .snapshots();
   }
 
-  // Stream getChats() {
-  //   return Firestore.instance.collection("chats").where("uid", )
-  // }
+  Stream getChats() {
+    return Firestore.instance
+        .collection("users")
+        .document(currentUser.uid)
+        .collection("friends")
+        .where("hasChat", isEqualTo: true)
+        .snapshots();
+  }
 
   Future<QuerySnapshot> getAllFriends() async {
     return await Firestore.instance
