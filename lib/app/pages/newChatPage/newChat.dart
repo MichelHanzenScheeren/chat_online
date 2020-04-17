@@ -27,7 +27,9 @@ class _NewChatState extends State<NewChat> {
           IconButton(
             icon: Icon(Icons.person_add),
             onPressed: () {
-              openPage(context, AddFriend());
+              setState(() {
+                openPage(context, AddFriend());
+              });
             },
           ),
         ],

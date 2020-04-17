@@ -49,29 +49,37 @@ class ControlFirebase {
   }
 
   Future saveFriend(Map friend) async {
-    Map<String, dynamic> data = {
-      "uid": friend["uid"],
-      "name": friend["name"],
-      "photoUrl": friend["photoUrl"],
-      "hasChat": false
-    };
-    await Firestore.instance
+    DocumentSnapshot document = await Firestore.instance
         .collection("users")
         .document(currentUser.uid)
         .collection("friends")
         .document(friend["uid"])
-        .setData(data);
+        .get();
+    if (!document.exists) {
+      Map<String, dynamic> data = {
+        "uid": friend["uid"],
+        "name": friend["name"],
+        "photoUrl": friend["photoUrl"],
+        "hasChat": false
+      };
+      await Firestore.instance
+          .collection("users")
+          .document(currentUser.uid)
+          .collection("friends")
+          .document(friend["uid"])
+          .setData(data);
 
-    data["uid"] = currentUser.uid;
-    data["name"] = currentUser.displayName;
-    data["photoUrl"] = currentUser.photoUrl;
-    data["hasChat"] = false;
-    await Firestore.instance
-        .collection("users")
-        .document(friend["uid"])
-        .collection("friends")
-        .document(currentUser.uid)
-        .setData(data);
+      data["uid"] = currentUser.uid;
+      data["name"] = currentUser.displayName;
+      data["photoUrl"] = currentUser.photoUrl;
+      data["hasChat"] = false;
+      await Firestore.instance
+          .collection("users")
+          .document(friend["uid"])
+          .collection("friends")
+          .document(currentUser.uid)
+          .setData(data);
+    }
   }
 
   Future sendMessage(String uidFriend, {String text, File file}) async {
