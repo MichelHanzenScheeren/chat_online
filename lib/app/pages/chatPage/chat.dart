@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'package:chatonline/app/firebase/controlFirebase.dart';
+import 'package:chatonline/app/widgets/waitingWidget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chatonline/app/pages/chatPage/textComposer.dart';
 import 'package:chatonline/app/pages/chatPage/constructBody.dart';
 
 class Chat extends StatefulWidget {
+  final String uidFriend;
+  Chat(this.uidFriend);
+
   @override
   _ChatState createState() => _ChatState();
 }
@@ -12,34 +17,31 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isLoadingImg = false;
+  DocumentSnapshot friend;
 
-  Future sendMessage({String text, File file}) async {
-    try {
-      setLoading(true);
-      await ControlFirebase.instance.sendMessage(text: text, file: file);
-      setLoading(false);
-    } catch (error) {
-      showSnackbar(
-          "Não foi possível concluir o login, tente novamente!", Colors.red);
-    }
+  @override
+  void initState() {
+    super.initState();
+    getFriend();
   }
 
-  void setLoading(bool loading) {
+  void getFriend() async {
+    DocumentSnapshot document =
+        await ControlFirebase.instance.getFriend(widget.uidFriend);
     setState(() {
-      isLoadingImg = loading;
+      friend = document;
     });
   }
 
-  void showSnackbar(String text, Color cor) {
-    _scaffoldKey.currentState.showSnackBar(
-      SnackBar(
-        content: Text(
-          text,
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: cor,
-      ),
-    );
+  Future sendMessage({String text, File file}) async {
+    try {
+      setState(() => isLoadingImg = true);
+      await ControlFirebase.instance
+          .sendMessage(widget.uidFriend, text: text, file: file);
+      setState(() => isLoadingImg = false);
+    } catch (error) {
+      print("Não foi possível enviar a mensagem.");
+    }
   }
 
   @override
@@ -47,24 +49,9 @@ class _ChatState extends State<Chat> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(ControlFirebase.instance.currentUser != null
-            ? "Olá, ${ControlFirebase.instance.currentUser.displayName}"
-            : "ChatApp"),
         centerTitle: true,
         elevation: 0,
-        actions: <Widget>[
-          ControlFirebase.instance.currentUser != null
-              ? IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    setState(() {
-                      ControlFirebase.instance.signOut();
-                    });
-                    showSnackbar("signOut concluído!", Colors.yellow);
-                  },
-                )
-              : Container()
-        ],
+        title: myTitle(),
       ),
       body: Stack(
         children: <Widget>[
@@ -78,15 +65,51 @@ class _ChatState extends State<Chat> {
               ),
             ),
           ),
-          Column(
-            children: <Widget>[
-              ConstructBody(),
-              isLoadingImg ? LinearProgressIndicator() : Container(),
-              TextComposer(sendMessage),
-            ],
-          ),
+          buildChat(),
         ],
       ),
+    );
+  }
+
+  Widget myTitle() {
+    if (friend == null) {
+      return WaitingWidget(20, 20);
+    } else {
+      return Row(
+        children: <Widget>[
+          Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(friend.data["senderPhotoUrl"]),
+              ),
+            ),
+          ),
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(left: 8),
+              child: Column(
+                children: <Widget>[
+                  Text(friend.data["name"]),
+                ],
+              ),
+            ),
+          )
+        ],
+      );
+    }
+  }
+
+  Widget buildChat() {
+    return Column(
+      children: <Widget>[
+        ConstructBody(widget.uidFriend),
+        isLoadingImg ? LinearProgressIndicator() : Container(),
+        TextComposer(sendMessage),
+      ],
     );
   }
 }

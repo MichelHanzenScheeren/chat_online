@@ -1,4 +1,5 @@
 import 'package:chatonline/app/firebase/controlFirebase.dart';
+import 'package:chatonline/app/widgets/waitingWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class _NewChatState extends State<NewChat> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
-                    return waitingWidget();
+                    return Center(child: WaitingWidget(100, 100));
                     break;
                   default:
                     return listWidget(snapshot.data.documents.toList());
@@ -48,19 +49,6 @@ class _NewChatState extends State<NewChat> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget waitingWidget() {
-    return Center(
-      child: Container(
-        width: 80,
-        height: 80,
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-          strokeWidth: 5,
-        ),
       ),
     );
   }
