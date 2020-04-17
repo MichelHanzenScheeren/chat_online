@@ -84,7 +84,7 @@ class _ChatState extends State<Chat> {
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(friend.data["senderPhotoUrl"]),
+                image: NetworkImage(friend.data["photoUrl"]),
               ),
             ),
           ),

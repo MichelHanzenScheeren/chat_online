@@ -1,4 +1,5 @@
 import 'package:chatonline/app/firebase/controlFirebase.dart';
+import 'package:chatonline/app/pages/addFriendPage/addFriend.dart';
 import 'package:chatonline/app/widgets/waitingWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,11 @@ class NewChat extends StatefulWidget {
 }
 
 class _NewChatState extends State<NewChat> {
+  Future openPage(BuildContext context, dynamic page) async {
+    return await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +25,10 @@ class _NewChatState extends State<NewChat> {
         elevation: 0,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {},
+            icon: Icon(Icons.person_add),
+            onPressed: () {
+              openPage(context, AddFriend());
+            },
           ),
         ],
       ),
@@ -50,15 +58,15 @@ class _NewChatState extends State<NewChat> {
     return ListView.builder(
       itemCount: documents.length,
       itemBuilder: (context, index) {
-        return itemFromList(documents[index].data, documents[index].documentID);
+        return itemFromList(documents[index].data);
       },
     );
   }
 
-  Widget itemFromList(Map<String, dynamic> friend, String uid) {
+  Widget itemFromList(Map<String, dynamic> friend) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context, uid);
+        Navigator.pop(context, friend["uid"]);
       },
       child: Card(
         color: Colors.deepPurpleAccent,
@@ -73,7 +81,7 @@ class _NewChatState extends State<NewChat> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(friend["senderPhotoUrl"]),
+                    image: NetworkImage(friend["photoUrl"]),
                   ),
                 ),
               ),

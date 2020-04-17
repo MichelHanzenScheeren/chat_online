@@ -63,7 +63,7 @@ class _AllChatsState extends State<AllChats> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(friend["senderPhotoUrl"]),
+                    image: NetworkImage(friend["photoUrl"]),
                   ),
                 ),
               ),

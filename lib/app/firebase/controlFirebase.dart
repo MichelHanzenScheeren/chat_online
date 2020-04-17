@@ -38,13 +38,39 @@ class ControlFirebase {
     Map<String, dynamic> data = {
       "uid": user.uid,
       "name": user.displayName,
-      "senderPhotoUrl": user.photoUrl,
+      "photoUrl": user.photoUrl,
       "email": user.email,
       "phone": user.phoneNumber
     };
     await Firestore.instance
         .collection("users")
         .document(data["uid"])
+        .setData(data);
+  }
+
+  Future saveFriend(Map friend) async {
+    Map<String, dynamic> data = {
+      "uid": friend["uid"],
+      "name": friend["name"],
+      "photoUrl": friend["photoUrl"],
+      "hasChat": false
+    };
+    await Firestore.instance
+        .collection("users")
+        .document(currentUser.uid)
+        .collection("friends")
+        .document(friend["uid"])
+        .setData(data);
+
+    data["uid"] = currentUser.uid;
+    data["name"] = currentUser.displayName;
+    data["photoUrl"] = currentUser.photoUrl;
+    data["hasChat"] = false;
+    await Firestore.instance
+        .collection("users")
+        .document(friend["uid"])
+        .collection("friends")
+        .document(currentUser.uid)
         .setData(data);
   }
 
@@ -142,5 +168,14 @@ class ControlFirebase {
     FirebaseAuth.instance.signOut();
     googleSignIn.signOut();
     currentUser = null;
+  }
+
+  Future<List> findUser(String text) async {
+    QuerySnapshot searchedUsers = await Firestore.instance
+        .collection("users")
+        .where("email", isEqualTo: text)
+        .getDocuments();
+
+    return searchedUsers.documents.toList();
   }
 }
